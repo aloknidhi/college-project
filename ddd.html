@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Signup</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --bg-accent: #000000;
+      --card: #111a2e;
+      --text: #b07ae8;
+      --muted: #dd6cc8;
+      --brand: #877641;
+      --brand-2: #ee2292;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(235, 48, 238, 0.25);
+      --ring: 0 0 0 3px rgba(199, 13, 224, 0.956);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
+      background: url("dis.jpg") no-repeat center center/cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #ececec;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--brand), #000000);
+      box-shadow: var(--shadow);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      width: 100%;
+      max-width: 420px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 26px;
+    }
+
+    p.muted {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field span {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    input {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: var(--ring);
+      border-color: transparent;
+    }
+
+    .btn {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: #fff;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .switch a {
+      color: var(--brand-2);
+      text-decoration: none;
+    }
+
+    .switch a:hover {
+      text-decoration: underline;
+    }
+
+    .success {
+      color: lightgreen;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo">AN</div>
+      <span>ALOK NIDHI</span>
+    </div>
+    <span> DISASTER HU MAI</span>
+  </header>
+
+  <main>
+    <!-- Login -->
+    <section class="card" id="login">
+      <h1>WELCOME BACK</h1>
+      <p class="muted">Log in to access your dashboard</p>
+      <form id="loginForm">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="loginEmail" required placeholder="you@example.com" />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="loginPassword" required placeholder="••••••••" />
+        </label>
+        <button type="submit" class="btn">Log In</button>
+        <p class="switch">
+          New here? <a href="#signup">Create an account</a>
+        </p>
+      </form>
+    </section>
+
+    <!-- Signup -->
+    <section class="card" id="signup" style="display:none;">
+      <h1>Create your account</h1>
+      <p class="muted">Join the community and start contributing.</p>
+      <form id="signupForm">
+        <label class="field"><span>Full Name</span>
+          <input type="text" id="name" required placeholder="Your name" />
+        </label>
+        <label class="field"><span>Email</span>
+          <input type="email" id="email" required placeholder="you@example.com" />
+        </label>
+        <label class="field"><span>Password</span>
+          <input type="password" id="password" required placeholder="Create password" />
+        </label>
+        <label class="field"><span>Confirm Password</span>
+          <input type="password" id="confirmPassword" required placeholder="Re-enter password" />
+        </label>
+        <button type="submit" class="btn">Create Account</button>
+        <div id="signupSuccess" class="success"></div>
+        <p class="switch">
+          Already have an account? <a href="#login">Log in</a>
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Toggle system
+    const login = document.getElementById("login");
+    const signup = document.getElementById("signup");
+    document.querySelectorAll(".switch a").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (a.getAttribute("href") === "#signup") {
+          login.style.display = "none";
+          signup.style.display = "block";
+        } else {
+          signup.style.display = "none";
+          login.style.display = "block";
+        }
+      });
+    });
+
+    // Login redirect
+    document.getElementById("loginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      let email = document.getElementById("loginEmail").value;
+      let pass = document.getElementById("loginPassword").value;
+
+      if(email && pass){
+        // Redirect to your disaster management hub page
+        window.location.href = "disaster.html";  
+      } else {
+        alert("Please enter valid credentials");
+      }
+    });
+
+    // Signup form
+    document.getElementById("signupForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      let pass = document.getElementById("password").value;
+      let confirmPass = document.getElementById("confirmPassword").value;
+      if(pass !== confirmPass){
+        document.getElementById("signupSuccess").textContent = "❌ Passwords do not match!";
+        return;
+      }
+      document.getElementById("signupSuccess").textContent = "🎉 Account created successfully!";
+      this.reset();
+    });
+  </script>
+ 
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault(); // default reload hata diya
+    // yaha redirect karna hai dusre page pe
+    window.location.href = "alok1.html";  
+  });
+</script>
+
+</body>
+</html>

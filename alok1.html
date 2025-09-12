@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Disaster Management Hub</title>
+    <meta
+      name="description"
+      content="College project: disaster preparedness, live alerts, resources, volunteers"
+    />
+    <style>
+      :root {
+        --bg: #0b1220; /* background */
+        --card: #111a2e; /* surface */
+        --muted: #94a3b8; /* muted text */
+        --text: #e6edf6; /* main text */
+        --brand: #38bdf8; /* accent */
+        --ok: #22c55e; /* success */
+        --warn: #f59e0b; /* warning */
+        --danger: #ef4444; /* danger */
+        --ring: 0 0 0 3px rgba(56, 189, 248, 0.35);
+        --radius: 16px;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji",
+          "Segoe UI Emoji";
+        color: var(--text);
+        background: radial-gradient(
+            1200px 600px at 80% -10%,
+            #1d2b4b 0%,
+            rgba(13, 19, 35, 0) 60%
+          ),
+          var(--bg);
+      }
+      a {
+        color: var(--brand);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      /* Header */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: saturate(1.2) blur(10px);
+        background: linear-gradient(
+          180deg,
+          rgba(11, 18, 32, 0.9),
+          rgba(11, 18, 32, 0.6)
+        );
+        border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #38bdf8, #6366f1);
+        display: grid;
+        place-items: center;
+        color: white;
+        box-shadow: var(--shadow);
+      }
+      .logo span {
+        font-size: 18px;
+      }
+      .nav a {
+        color: var(--text);
+      }
+      .nav-links {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+      .nav-links a {
+        opacity: 0.9;
+      }
+      .nav-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--text);
+        cursor: pointer;
+      }
+      .btn:hover {
+        border-color: rgba(148, 163, 184, 0.35);
+      }
+      .btn.primary {
+        background: linear-gradient(135deg, #38bdf8, #22d3ee);
+        color: #0b1220;
+        border-color: transparent;
+      }
+      .btn.primary:hover {
+        filter: brightness(0.95);
+      }
+
+      /* Emergency strip */
+      .strip {
+        background: linear-gradient(
+          90deg,
+          rgba(239, 68, 68, 0.15),
+          rgba(245, 158, 11, 0.15)
+        );
+        border-bottom: 1px solid rgba(239, 68, 68, 0.25);
+      }
+      .strip-inner {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        padding: 8px 0;
+        font-weight: 600;
+      }
+      .badge {
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        background: #ef4444;
+        color: white;
+      }
+      .hotlines {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        font-size: 14px;
+      }
+      .hotlines span {
+        opacity: 0.9;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 64px 0 24px;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 28px;
+      }
+      .hero h1 {
+        font-size: 40px;
+        line-height: 1.15;
+        margin: 0 0 12px;
+      }
+      .hero p {
+        color: var(--muted);
+        margin: 0 0 20px;
+      }
+      .hero-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.03),
+          rgba(255, 255, 255, 0.015)
+        );
+        border: 1px solid rgba(148, 163, 184, 0.12);
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+      .card h3 {
+        margin: 8px 0 6px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .hero-visual {
+        background: radial-gradient(
+            200px 120px at 80% 20%,
+            rgba(34, 211, 238, 0.2),
+            transparent
+          ),
+          linear-gradient(
+            180deg,
+            rgba(99, 102, 241, 0.25),
+            rgba(56, 189, 248, 0.05)
+          );
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        border-radius: var(--radius);
+        min-height: 260px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .pulse {
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 2px dashed rgba(56, 189, 248, 0.5);
+        animation: pulse 6s linear infinite;
+      }
+      .pulse:nth-child(2) {
+        width: 240px;
+        height: 240px;
+        animation-delay: 1s;
+      }
+      .pulse:nth-child(3) {
+        width: 320px;
+        height: 320px;
+        animation-delay: 2s;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.7) rotate(0);
+        }
+        100% {
+          transform: scale(1.3) rotate(360deg);
+        }
+      }
+
+      /* Section blocks */
+      section {
+        padding: 40px 0;
+      }
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .section-head h2 {
+        margin: 0;
+        font-size: 26px;
+      }
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      /* Alerts */
+      .ticker {
+        display: flex;
+        gap: 12px;
+        overflow: auto;
+        padding-bottom: 4px;
+      }
+      .alert {
+        min-width: 320px;
+        border-left: 4px solid var(--warn);
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .alert.danger {
+        border-left-color: var(--danger);
+        background: rgba(239, 68, 68, 0.08);
+        border-color: rgba(239, 68, 68, 0.25);
+      }
+      .alert.ok {
+        border-left-color: var(--ok);
+        background: rgba(34, 197, 94, 0.08);
+        border-color: rgba(34, 197, 94, 0.2);
+      }
+      .alert small {
+        display: block;
+        color: var(--muted);
+      }
+
+      /* Disaster grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .tile {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.03),
+          rgba(255, 255, 255, 0.015)
+        );
+        border: 1px solid rgba(148, 163, 184, 0.12);
+        padding: 16px;
+        border-radius: var(--radius);
+      }
+      .tile h3 {
+        margin: 8px 0;
+      }
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.15);
+        color: #cbd5e1;
+      }
+
+      /* Checklist */
+      .list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .check {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        background: rgba(56, 189, 248, 0.08);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .check input {
+        margin-top: 4px;
+      }
+
+      /* Volunteer form */
+      form {
+        display: grid;
+        gap: 12px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--text);
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        box-shadow: var(--ring);
+        border-color: transparent;
+      }
+
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* Footer */
+      footer {
+        padding: 30px 0;
+        color: #cbd5e1;
+        border-top: 1px solid rgba(148, 163, 184, 0.15);
+        background: linear-gradient(
+          180deg,
+          rgba(17, 26, 46, 0.4),
+          rgba(17, 26, 46, 0.7)
+        );
+      }
+      .foot {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 20px;
+      }
+      .copyright {
+        margin-top: 12px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      /* Responsive */
+      @media (max-width: 1000px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .foot {
+          grid-template-columns: 1fr 1fr;
+        }
+        .list {
+          grid-template-columns: 1fr;
+        }
+        .cols {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .nav-links {
+          display: none;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"><span>DM</span></div>
+          <span>Disaster Management Hub</span>
+        </div>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#alerts">Alerts</a>
+          <a href="#disasters">Disasters</a>
+          <a href="#preparedness">Preparedness</a>
+          <a href="#volunteer">Volunteer</a>
+          <a href="#resources">Resources</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <button
+            class="btn"
+            id="toggleTheme"
+            aria-pressed="false"
+            title="Toggle theme"
+          >
+            🌓 <span>Theme</span>
+          </button>
+          <a href="#volunteer" class="btn primary">Become a Volunteer</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Emergency strip -->
+    <div class="strip">
+      <div class="container strip-inner">
+        <span class="badge" aria-label="Emergency">EMERGENCY</span>
+        <div class="hotlines" role="list">
+          <span role="listitem">Police: <strong>100</strong></span>
+          <span role="listitem">Fire: <strong>101</strong></span>
+          <span role="listitem">Ambulance: <strong>102</strong></span>
+          <span role="listitem">Disaster Helpline: <strong>108</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <h1>Be prepared. Act fast. <br />Help communities recover.</h1>
+          <p>
+            Learn about disasters, get live alerts, and join relief efforts.
+            This portal is designed for students, volunteers, and local
+            authorities to coordinate effectively.
+          </p>
+          <div class="hero-cards">
+            <div class="card">
+              <div class="pill">Quick Links</div>
+              <h3>Safety Guides</h3>
+              <p>
+                Earthquake, flood, cyclone, fire — what to do before, during,
+                and after.
+              </p>
+            </div>
+            <div class="card">
+              <div class="pill">Live</div>
+              <h3>Local Alerts</h3>
+              <p>Auto-updated ticker with severity, area, and action items.</p>
+            </div>
+            <div class="card">
+              <div class="pill">Community</div>
+              <h3>Volunteer Hub</h3>
+              <p>
+                Register, get trained, and get deployed to verified relief
+                tasks.
+              </p>
+            </div>
+            <div class="card">
+              <div class="pill">Resources</div>
+              <h3>Downloads</h3>
+              <p>
+                Checklists, SOPs, and government advisories for quick reference.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="pulse"></div>
+          <div class="pulse"></div>
+          <div class="pulse"></div>
+          <div style="position: relative; z-index: 2; text-align: center">
+            <div style="font-size: 52px">🛰️</div>
+            <div>Real‑time Monitoring</div>
+            <small style="opacity: 0.8"
+              >(Mock visualization — connect APIs later)</small
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alerts -->
+    <section id="alerts">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Live Alerts & Updates</h2>
+            <p>Color-coded by severity. Replace with real API data later.</p>
+          </div>
+          <button class="btn" id="refreshAlerts">↻ Refresh</button>
+        </div>
+        <div class="ticker" id="alertsTicker" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Disasters grid -->
+    <section id="disasters">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Disaster Information Center</h2>
+            <p>Causes, impacts, and do's & don'ts for each type.</p>
+          </div>
+          <a class="btn" href="#resources">View Guides</a>
+        </div>
+        <div class="grid">
+          <article class="tile">
+            <div class="pill">Earthquake</div>
+            <h3>Drop, Cover, Hold</h3>
+            <p>
+              Secure heavy items, prepare a go-bag, know safe spots indoors.
+            </p>
+          </article>
+          <article class="tile">
+            <div class="pill">Flood</div>
+            <h3>Turn Around, Don't Drown</h3>
+            <p>
+              Avoid walking/driving through floodwater; move to higher ground.
+            </p>
+          </article>
+          <article class="tile">
+            <div class="pill">Cyclone</div>
+            <h3>Secure & Shelter</h3>
+            <p>
+              Reinforce windows/doors, keep battery radios, follow advisories.
+            </p>
+          </article>
+          <article class="tile">
+            <div class="pill">Fire</div>
+            <h3>Alert & Evacuate</h3>
+            <p>
+              Use stairs, not lifts; check doors for heat; stop, drop, roll.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preparedness checklist -->
+    <section id="preparedness">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Preparedness & Training</h2>
+            <p>Interactive checklist — save to local storage.</p>
+          </div>
+          <button class="btn" id="resetChecklist">Reset</button>
+        </div>
+        <div class="list" id="checklist">
+          <label class="check"
+            ><input type="checkbox" data-key="water" />
+            <div>
+              <strong>Water</strong><br /><small
+                >3 litres per person per day (3-day supply)</small
+              >
+            </div></label
+          >
+          <label class="check"
+            ><input type="checkbox" data-key="food" />
+            <div>
+              <strong>Non‑perishable food</strong><br /><small
+                >3-day supply; include infant/elderly needs</small
+              >
+            </div></label
+          >
+          <label class="check"
+            ><input type="checkbox" data-key="firstaid" />
+            <div>
+              <strong>First‑aid kit</strong><br /><small
+                >Bandages, antiseptic, meds, copies of prescriptions</small
+              >
+            </div></label
+          >
+          <label class="check"
+            ><input type="checkbox" data-key="docs" />
+            <div>
+              <strong>Important documents</strong><br /><small
+                >IDs, policies, contacts in waterproof pouch</small
+              >
+            </div></label
+          >
+          <label class="check"
+            ><input type="checkbox" data-key="torch" />
+            <div>
+              <strong>Flashlight + batteries</strong><br /><small
+                >Or crank/solar torch</small
+              >
+            </div></label
+          >
+          <label class="check"
+            ><input type="checkbox" data-key="charger" />
+            <div>
+              <strong>Power bank</strong><br /><small
+                >Keep charged; include cables</small
+              >
+            </div></label
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Volunteer form -->
+    <section id="volunteer">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Relief & Volunteer Registration</h2>
+            <p>Join verified tasks via campus or local NGOs.</p>
+          </div>
+        </div>
+        <div class="grid" style="grid-template-columns: 1.2fr 0.8fr">
+          <div class="tile">
+            <form id="volForm">
+              <div class="cols">
+                <div>
+                  <label
+                    >Full Name<input
+                      required
+                      name="name"
+                      placeholder="Your name"
+                  /></label>
+                </div>
+                <div>
+                  <label
+                    >Phone<input
+                      required
+                      name="phone"
+                      placeholder="10-digit number"
+                  /></label>
+                </div>
+              </div>
+              <div class="cols">
+                <div>
+                  <label
+                    >Email<input
+                      type="email"
+                      required
+                      name="email"
+                      placeholder="you@example.com"
+                  /></label>
+                </div>
+                <div>
+                  <label
+                    >City<input name="city" placeholder="e.g., Mumbai"
+                  /></label>
+                </div>
+              </div>
+              <div class="cols">
+                <div>
+                  <label
+                    >Skillset<select name="skill">
+                      <option>General Volunteer</option>
+                      <option>First Aid</option>
+                      <option>Logistics</option>
+                      <option>Search & Rescue</option>
+                      <option>Tech/Comms</option>
+                    </select></label
+                  >
+                </div>
+                <div>
+                  <label
+                    >Availability<select name="availability">
+                      <option>Weekdays</option>
+                      <option>Weekends</option>
+                      <option>Anytime</option>
+                    </select></label
+                  >
+                </div>
+              </div>
+              <label
+                >Notes<textarea
+                  name="notes"
+                  rows="3"
+                  placeholder="Mention prior experience, languages, etc."
+                ></textarea>
+              </label>
+              <button class="btn primary" type="submit">
+                Submit Registration
+              </button>
+              <div
+                id="volMsg"
+                role="status"
+                style="margin-top: 8px; color: var(--muted)"
+              ></div>
+            </form>
+          </div>
+          <aside class="tile">
+            <h3>Why volunteer?</h3>
+            <p>
+              Trained volunteers reduce response time and save lives. Earn
+              community service credits and certificates.
+            </p>
+            <ul>
+              <li>Campus-led drives & mock drills</li>
+              <li>NGO collaboration for relief distribution</li>
+              <li>Digital ops: helpline & data entry</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Resources -->
+    <section id="resources">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Resource Center</h2>
+            <p>Download SOPs, checklists, and advisories.</p>
+          </div>
+          <a class="btn" href="#contact">Request More</a>
+        </div>
+        <div class="grid">
+          <div class="tile">
+            <h3>Emergency Plan Template</h3>
+            <p>Household/hostel plan for evacuation & rendezvous.</p>
+            <a href="#" download>Download PDF</a>
+          </div>
+          <div class="tile">
+            <h3>Campus Evacuation Map</h3>
+            <p>Mark exits, assembly points, and first-aid posts.</p>
+            <a href="#" download>Download PNG</a>
+          </div>
+          <div class="tile">
+            <h3>First Aid Quick Guide</h3>
+            <p>CPR steps and bleeding control.</p>
+            <a href="#" download>Download PDF</a>
+          </div>
+          <div class="tile">
+            <h3>Government Advisories</h3>
+            <p>Links to NDMA/UNDRR resources.</p>
+            <a href="#">Open Links</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Contact & Emergency Help</h2>
+            <p>Reach the campus DM cell or request assistance.</p>
+          </div>
+        </div>
+        <div
+          class="grid"
+          style="grid-template-columns: 0.8fr 1.2fr; align-items: start"
+        >
+          <div class="tile">
+            <h3>Emergency Contacts</h3>
+            <ul>
+              <li>Campus Security: <a href="tel:1234567890">1234567890</a></li>
+              <li>Health Center: <a href="tel:109">109</a></li>
+              <li>Local NDMA Office: <a href="tel:112">112</a></li>
+            </ul>
+            <p>
+              Location sharing during a request will help responders reach you
+              faster.
+            </p>
+          </div>
+          <div class="tile">
+            <form id="helpForm">
+              <div class="cols">
+                <div>
+                  <label>Your Name<input name="hname" required /></label>
+                </div>
+                <div>
+                  <label>Phone<input name="hphone" required /></label>
+                </div>
+              </div>
+              <label
+                >Location<textarea
+                  name="hlocation"
+                  rows="2"
+                  placeholder="Building/Area + City"
+                ></textarea>
+              </label>
+              <label
+                >Describe the situation<textarea
+                  name="hdesc"
+                  rows="3"
+                  placeholder="What happened? Anyone injured? Immediate risks?"
+                ></textarea>
+              </label>
+              <button class="btn primary" type="submit">Request Help</button>
+              <div
+                id="helpMsg"
+                role="status"
+                style="margin-top: 8px; color: var(--muted)"
+              ></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="foot">
+          <div>
+            <strong>Disaster Management Hub</strong>
+            <p class="copyright">
+              © <span id="year"></span> College Project. Built by the DM Club.
+            </p>
+          </div>
+          <div>
+            <div class="pill" style="margin-bottom: 8px">Quick Nav</div>
+            <div style="display: grid; gap: 6px">
+              <a href="#alerts">Alerts</a>
+              <a href="#preparedness">Checklist</a>
+              <a href="#volunteer">Volunteer</a>
+              <a href="#resources">Resources</a>
+            </div>
+          </div>
+          <div>
+            <div class="pill" style="margin-bottom: 8px">Social</div>
+            <div style="display: grid; gap: 6px">
+              <a href="#">Instagram</a>
+              <a href="#">YouTube</a>
+              <a href="#">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // --- Dark / Light theme toggle (simple) ---
+      const btnTheme = document.getElementById("toggleTheme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      const saved = localStorage.getItem("theme");
+      if (saved === "light") document.documentElement.classList.add("light");
+      if (saved === "dark" || (!saved && prefersDark))
+        document.documentElement.classList.remove("light");
+
+      btnTheme?.addEventListener("click", () => {
+        const isLight = document.documentElement.classList.toggle("light");
+        btnTheme.setAttribute("aria-pressed", String(isLight));
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+      });
+
+      // Light theme overrides
+      const style = document.createElement("style");
+      style.textContent = `
+      .light body{ background: radial-gradient(1200px 600px at 80% -10%, #e9f1ff 0%, rgba(233,241,255,0) 60%), #f7fbff; color:#0b1220 }
+      .light .card, .light .tile{ background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01)); border-color: rgba(15,23,42,.08)}
+      .light header{ background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.6)); border-bottom-color:rgba(15,23,42,.08)}
+      .light footer{ background:linear-gradient(180deg, rgba(226,232,240,.6), rgba(226,232,240,.9))}
+      .light .strip{ background:linear-gradient(90deg, rgba(239,68,68,.12), rgba(245,158,11,.12)); }
+    `;
+      document.head.appendChild(style);
+
+      // --- Alerts ticker (mock data) ---
+      const alertsTicker = document.getElementById("alertsTicker");
+      const refreshBtn = document.getElementById("refreshAlerts");
+      const sampleAlerts = [
+        {
+          level: "danger",
+          title: "Severe Cyclonic Storm",
+          area: "Coastal Districts",
+          action: "Evacuate low-lying areas",
+        },
+        {
+          level: "warn",
+          title: "River Flood Watch",
+          area: "Delta Region",
+          action: "Move to higher ground",
+        },
+        {
+          level: "ok",
+          title: "Heat Advisory Lifted",
+          area: "City & Suburbs",
+          action: "Normal activities resume",
+        },
+        {
+          level: "warn",
+          title: "Landslide Risk",
+          area: "Hill Zone",
+          action: "Avoid travel; follow local orders",
+        },
+      ];
+
+      function renderAlerts() {
+        alertsTicker.innerHTML = "";
+        sampleAlerts.forEach((a, i) => {
+          const div = document.createElement("div");
+          div.className =
+            "alert " +
+            (a.level === "danger" ? "danger" : a.level === "ok" ? "ok" : "");
+          div.innerHTML = `<strong>${a.title}</strong> — <em>${a.area}</em><br/><small>Action: ${a.action}</small>`;
+          alertsTicker.appendChild(div);
+        });
+      }
+      refreshBtn?.addEventListener("click", renderAlerts);
+      renderAlerts();
+
+      // --- Checklist persistence ---
+      const checklist = document.getElementById("checklist");
+      const resetBtn = document.getElementById("resetChecklist");
+      checklist.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+        const key = "chk_" + cb.dataset.key;
+        cb.checked = localStorage.getItem(key) === "1";
+        cb.addEventListener("change", () =>
+          localStorage.setItem(key, cb.checked ? "1" : "0")
+        );
+      });
+      resetBtn?.addEventListener("click", () => {
+        checklist.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+          cb.checked = false;
+          localStorage.removeItem("chk_" + cb.dataset.key);
+        });
+      });
+
+      // --- Volunteer form (demo only) ---
+      document.getElementById("volForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const name = fd.get("name");
+        document.getElementById(
+          "volMsg"
+        ).textContent = `Thanks, ${name}! We will reach out soon.`;
+        e.target.reset();
+      });
+
+      // --- Help form (demo only) ---
+      document.getElementById("helpForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const place = fd.get("hlocation") || "your location";
+        document.getElementById(
+          "helpMsg"
+        ).textContent = `Request received. Responders are being notified for ${place}.`;
+        e.target.reset();
+      });
+
+      // Year
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+    <!--
+    ✅ How to extend this for your project:
+    1) Replace mock alert data with a real API (e.g., weather alerts). Fetch and map to the .ticker UI.
+    2) Build detail pages for each disaster type and link tiles.
+    3) Hook volunteer form to a backend (Node/Express or Firebase) and store entries.
+    4) Create PDFs for Resources and put real links.
+    5) Add a map (Leaflet.js) to visualize relief camps & incidents.
+  --></body>
+</html>
