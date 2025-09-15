@@ -214,58 +214,62 @@
     </section>
   </main>
 
-  <script>
-    // Toggle system
-    const login = document.getElementById("login");
-    const signup = document.getElementById("signup");
-    document.querySelectorAll(".switch a").forEach((a) => {
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (a.getAttribute("href") === "#signup") {
-          login.style.display = "none";
-          signup.style.display = "block";
-        } else {
-          signup.style.display = "none";
-          login.style.display = "block";
-        }
-      });
-    });
-
-    // Login redirect
-    document.getElementById("loginForm").addEventListener("submit", function(e){
+ <script>
+  // Toggle system 
+  const login = document.getElementById("login");
+  const signup = document.getElementById("signup");
+  document.querySelectorAll(".switch a").forEach((a) => {
+    a.addEventListener("click", (e) => {
       e.preventDefault();
-      let email = document.getElementById("loginEmail").value;
-      let pass = document.getElementById("loginPassword").value;
-
-      if(email && pass){
-        // Redirect to your disaster management hub page
-        window.location.href = "disaster.html";  
+      if (a.getAttribute("href") === "#signup") {
+        login.style.display = "none";
+        signup.style.display = "block";
       } else {
-        alert("Please enter valid credentials");
+        signup.style.display = "none";
+        login.style.display = "block";
       }
     });
+  });
 
-    // Signup form
-    document.getElementById("signupForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      let pass = document.getElementById("password").value;
-      let confirmPass = document.getElementById("confirmPassword").value;
-      if(pass !== confirmPass){
-        document.getElementById("signupSuccess").textContent = "❌ Passwords do not match!";
-        return;
-      }
-      document.getElementById("signupSuccess").textContent = "🎉 Account created successfully!";
-      this.reset();
-    });
-  </script>
- 
-<script>
-  document.getElementById("loginForm").addEventListener("submit", function(e) {
-    e.preventDefault(); // default reload hata diya
-    // yaha redirect karna hai dusre page pe
-    window.location.href = "home.html";  
+  // Signup form with localStorage
+  document.getElementById("signupForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("password").value;
+    let confirmPass = document.getElementById("confirmPassword").value;
+
+    if(pass !== confirmPass){
+      document.getElementById("signupSuccess").textContent = "❌ Passwords do not match!";
+      return;
+    }
+
+    // Save user data to localStorage
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPassword", pass);
+    localStorage.setItem("userName", name);
+
+    document.getElementById("signupSuccess").textContent = "🎉 Account created successfully!";
+    this.reset();
+  });
+
+  // Login form with validation
+  document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    let email = document.getElementById("loginEmail").value;
+    let pass = document.getElementById("loginPassword").value;
+
+    // Get data from localStorage
+    let storedEmail = localStorage.getItem("userEmail");
+    let storedPass = localStorage.getItem("userPassword");
+
+    if(email === storedEmail && pass === storedPass){
+      // Redirect agar match hua
+      window.location.href = "home.html";  
+    } else {
+      alert("❌ Invalid email or password");
+    }
   });
 </script>
-
 </body>
 </html>
