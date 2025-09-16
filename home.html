@@ -8,6 +8,12 @@
       name="description"
       content="College project: disaster preparedness, live alerts, resources, volunteers"
     />
+     <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
       :root {
         --bg: #0b1220; /* background */
@@ -41,7 +47,12 @@
             rgba(13, 19, 35, 0) 60%
           ),
           var(--bg);
-      }
+          margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0a192f;
+      color: #fff;
+    }
+      
       a {
         color: var(--brand);
         text-decoration: none;
@@ -425,6 +436,19 @@
           grid-template-columns: 1fr;
         }
       }
+       
+    
+      
+    h2 {
+      padding: 1rem;
+    }
+    #weatherMap {
+      height: 500px;
+      width: 100%;
+      border-radius: 12px;
+      margin: 1rem auto;
+    }
+  
     </style>
   </head>
   <body>
@@ -510,7 +534,7 @@
           <div class="pulse"></div>
           <div style="position: relative; z-index: 2; text-align: center">
             <div style="font-size: 52px">🛰️</div>
-            <div>Weather Monitoring</div>
+            <div>weather Monitoring</div>
             <p>Real-Time</p>
             <small style="opacity: 0.8"
               ></small
@@ -520,105 +544,18 @@
       </div>
     </section>
 
-    <!-- Alerts -->
-   <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather Map Test</title>
 
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0a192f;
-      color: #fff;
-    }
-    h2 {
-      padding: 1rem;
-    }
-    #weatherMap {
-      height: 500px;
-      width: 100%;
-      border-radius: 12px;
-      margin: 1rem auto;
-    }
-  </style>
-</head>
-<body>
   <section id="alerts">
     <h2>🌍 Real-Time Weather Monitoring</h2>
     <div id="weatherMap"></div>
+    
+    <div class="ticker" id="alertsTicker"></div>
+    <div style="margin: 10px 0;">
+  <button class="btn primary" id="refreshAlerts">Refresh Alerts</button>
+</div>
+
+
   </section>
-
-  <script>
-    function initWeatherMap() {
-      // Center at India
-      const map = L.map("weatherMap").setView([20.5937, 78.9629], 5);
-
-      // Base map
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
-      }).addTo(map);
-
-      const API_KEY = "7850dd68e0f141b799d123758251609";
-
-      // Temperature layer
-      const temp = L.tileLayer(
-        `https://tile.openweathermap.org/map/temp/{z}/{x}/{y}.png?appid=${API_KEY}`,
-        { attribution: "Weather © OpenWeatherMap" }
-      );
-
-      // Clouds layer
-      const clouds = L.tileLayer(
-        `https://tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png?appid=${API_KEY}`,
-        { attribution: "Weather © OpenWeatherMap" }
-      );
-
-      // Rain layer
-      const rain = L.tileLayer(
-        `https://tile.openweathermap.org/map/precipitation/{z}/{x}/{y}.png?appid=${API_KEY}`,
-        { attribution: "Weather © OpenWeatherMap" }
-      );
-
-      // Wind layer
-      const wind = L.tileLayer(
-        `https://tile.openweathermap.org/map/wind/{z}/{x}/{y}.png?appid=${API_KEY}`,
-        { attribution: "Weather © OpenWeatherMap" }
-      );
-
-      // Default add temp
-      temp.addTo(map);
-
-      // Layer control
-      L.control
-        .layers(
-          {
-            Temperature: temp,
-            Clouds: clouds,
-            Rain: rain,
-            Wind: wind,
-          },
-          {}
-        )
-        .addTo(map);
-    }
-
-    initWeatherMap();
-  </script>
-</body>
-</html>
-
     <!-- Disasters grid -->
     <section id="disasters">
       <div class="container">
@@ -953,36 +890,73 @@
     </footer>
 
     <script>
-      // --- Dark / Light theme toggle (simple) ---
-      const btnTheme = document.getElementById("toggleTheme");
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      const saved = localStorage.getItem("theme");
-      if (saved === "light") document.documentElement.classList.add("light");
-      if (saved === "dark" || (!saved && prefersDark))
-        document.documentElement.classList.remove("light");
+      function initWeatherMap() {
+      // Center at India
+      const map = L.map("weatherMap").setView([20.5937, 78.9629], 5);
 
-      btnTheme?.addEventListener("click", () => {
-        const isLight = document.documentElement.classList.toggle("light");
-        btnTheme.setAttribute("aria-pressed", String(isLight));
-        localStorage.setItem("theme", isLight ? "light" : "dark");
-      });
+      // Base map
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
 
-      // Light theme overrides
-      const style = document.createElement("style");
-      style.textContent = `
-      .light body{ background: radial-gradient(1200px 600px at 80% -10%, #e9f1ff 0%, rgba(233,241,255,0) 60%), #f7fbff; color:#0b1220 }
-      .light .card, .light .tile{ background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.01)); border-color: rgba(15,23,42,.08)}
-      .light header{ background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.6)); border-bottom-color:rgba(15,23,42,.08)}
-      .light footer{ background:linear-gradient(180deg, rgba(226,232,240,.6), rgba(226,232,240,.9))}
-      .light .strip{ background:linear-gradient(90deg, rgba(239,68,68,.12), rgba(245,158,11,.12)); }
-    `;
-      document.head.appendChild(style);
+      const API_KEY = "7850dd68e0f141b799d123758251609";
 
+    // Temperature layer
+const temp = L.tileLayer(
+  `https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
+  { attribution: "Weather © OpenWeatherMap" }
+);
+
+// Clouds layer
+const clouds = L.tileLayer(
+  `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
+  { attribution: "Weather © OpenWeatherMap" }
+);
+
+// Rain layer
+const rain = L.tileLayer(
+  `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
+  { attribution: "Weather © OpenWeatherMap" }
+);
+
+// Wind layer
+const wind = L.tileLayer(
+  `https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${API_KEY}`,
+  { attribution: "Weather © OpenWeatherMap" }
+);
+
+// Default add temp
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=Punjab&appid=${API_KEY}`)
+.then(res => res.json())
+.then(data => {
+  const { coord, weather, main } = data;
+  L.marker([coord.lat, coord.lon])
+  .addTo(map)
+  .bindPopup(`<strong>${weather[0].main}</strong><br>Temp: ${(main.temp - 273.15).toFixed(1)}°C`);
+});
+
+// Default layer show karna
+temp.addTo(map);
+// Layer control
+    L.control
+      .layers(
+        {
+          Temperature: temp,
+          Clouds: clouds,
+          Rain: rain,
+          Wind: wind,
+        },
+        {}
+      )
+      .addTo(map);
+  }
+  
+
+    initWeatherMap();
+     
+      
       // --- Alerts ticker (mock data) ---
       const alertsTicker = document.getElementById("alertsTicker");
-      const refreshBtn = document.getElementById("refreshAlerts");
       const sampleAlerts = [
         {
           level: "danger",
@@ -1011,18 +985,28 @@
       ];
 
       function renderAlerts() {
-        alertsTicker.innerHTML = "";
-        sampleAlerts.forEach((a, i) => {
+  const API_KEY = "7850dd68e0f141b799d123758251609";
+  const alertsTicker = document.getElementById("alertsTicker");
+  alertsTicker.innerHTML = "<div class='alert ok'>Loading alerts...</div>";
+
+  fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=20.5937&lon=78.9629&exclude=minutely,hourly,daily&appid=${API_KEY}`)
+    .then(res => res.json())
+    .then(data => {
+      alertsTicker.innerHTML = "";
+      if (data.alerts && data.alerts.length > 0) {
+        data.alerts.forEach(alert => {
           const div = document.createElement("div");
-          div.className =
-            "alert " +
-            (a.level === "danger" ? "danger" : a.level === "ok" ? "ok" : "");
-          div.innerHTML = `<strong>${a.title}</strong> — <em>${a.area}</em><br/><small>Action: ${a.action}</small>`;
+          div.className = "alert danger";
+          div.innerHTML = `<strong>${alert.event}</strong> — <em>${alert.sender_name}</em><br/><small>${alert.description}</small>`;
           alertsTicker.appendChild(div);
         });
+      } else {
+        alertsTicker.innerHTML = "<div class='alert ok'>No active alerts</div>";
       }
-      refreshBtn?.addEventListener("click", renderAlerts);
-      renderAlerts();
+    });
+}
+renderAlerts();
+
 
       // --- Checklist persistence ---
       const checklist = document.getElementById("checklist");
@@ -1034,12 +1018,7 @@
           localStorage.setItem(key, cb.checked ? "1" : "0")
         );
       });
-      resetBtn?.addEventListener("click", () => {
-        checklist.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
-          cb.checked = false;
-          localStorage.removeItem("chk_" + cb.dataset.key);
-        });
-      });
+     
 
       // --- Volunteer form (demo only) ---
       document.getElementById("volForm")?.addEventListener("submit", (e) => {
@@ -1062,6 +1041,14 @@
         ).textContent = `Request received. Responders are being notified for ${place}.`;
         e.target.reset();
       });
+      resetBtn.addEventListener("click", () => {
+  checklist.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+    cb.checked = false;
+    localStorage.removeItem("chk_" + cb.dataset.key);
+  });
+  alert("Checklist reset successfully!");
+});
+
 
       // Year
       document.getElementById("year").textContent = new Date().getFullYear();
