@@ -44,13 +44,13 @@
         background: radial-gradient(
             1200px 600px at 80% -10%,
             #1d2b4b 0%,
-            rgba(13, 19, 35, 0) 60%
+            rgba(0, 0, 0, 0) 60%
           ),
           var(--bg);
           margin: 0;
       font-family: Arial, sans-serif;
-      background: #0a192f;
-      color: #fff;
+      background: #000000;
+      color: #f4074e;
     }
       
       a {
@@ -73,10 +73,10 @@
         backdrop-filter: saturate(1.2) blur(10px);
         background: linear-gradient(
           180deg,
-          rgba(11, 18, 32, 0.9),
-          rgba(11, 18, 32, 0.6)
+          rgba(91, 59, 90, 0.9),
+          rgba(0, 0, 0, 0.985)
         );
-        border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+        border-bottom: 1px solid rgba(246, 245, 252, 0.15);
       }
       .nav {
         display: flex;
@@ -91,16 +91,8 @@
         font-weight: 700;
         letter-spacing: 0.3px;
       }
-      .logo {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #38bdf8, #6366f1);
-        display: grid;
-        place-items: center;
-        color: white;
-        box-shadow: var(--shadow);
-      }
+      
+      
       .logo span {
         font-size: 18px;
       }
@@ -125,16 +117,16 @@
         gap: 7px;
         padding: 10px 14px;
         border-radius: 12px;
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        background: rgba(255, 255, 255, 0.02);
+        border: 3px solid rgb(151, 32, 211);
+        background: rgba(0, 0, 0, 0.493);
         color: var(--text);
         cursor: pointer;
       }
       .btn:hover {
-        border-color: rgba(148, 163, 184, 0.35);
+        border-color: rgba(66, 84, 111, 0.35);
       }
       .btn.primary {
-        background: linear-gradient(135deg, #38bdf8, #22d3ee);
+        background: linear-gradient(135deg, #ffffff, #e9ebef);
         color: #0b1220;
         border-color: transparent;
       }
@@ -224,10 +216,10 @@
           ),
           linear-gradient(
             180deg,
-            rgba(99, 102, 241, 0.25),
+            rgba(100, 102, 244, 0.25),
             rgba(56, 189, 248, 0.05)
           );
-        border: 1px solid rgba(148, 163, 184, 0.15);
+        border: 2px solid rgba(246, 246, 246, 0.15);
         border-radius: var(--radius);
         min-height: 260px;
         display: grid;
@@ -240,7 +232,7 @@
         width: 160px;
         height: 160px;
         border-radius: 50%;
-        border: 2px dashed rgba(56, 189, 248, 0.5);
+        border: 2px dashed rgba(249, 249, 249, 0.925);
         animation: pulse 6s linear infinite;
       }
       .pulse:nth-child(2) {
@@ -324,7 +316,7 @@
           rgba(255, 255, 255, 0.03),
           rgba(255, 255, 255, 0.015)
         );
-        border: 1px solid rgba(148, 163, 184, 0.12);
+        border: 2px solid rgba(166, 20, 234, 0.837);
         padding: 16px;
         border-radius: var(--radius);
       }
@@ -934,9 +926,9 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=Punjab&appid=${API_KEY}
   .addTo(map)
   .bindPopup(`<strong>${weather[0].main}</strong><br>Temp: ${(main.temp - 273.15).toFixed(1)}°C`);
 });
-
 // Default layer show karna
 temp.addTo(map);
+
 // Layer control
     L.control
       .layers(
